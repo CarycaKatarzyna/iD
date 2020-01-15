@@ -97,6 +97,36 @@ export function behaviorHash(context) {
         if (context.inIntro()) return;
         var s1 = formatter(context.map());
         if (s0 !== s1) {
+            var ids1 = s1.indexOf('id=');
+            var arrayIds1;
+            if (ids1 !== -1){
+                var substrS1 = s1.substring(ids1+3);
+                ids1 = substrS1.indexOf('&');
+                substrS1 = substrS1.substring(0, ids1);
+                arrayIds1 = substrS1.split(',');
+            }
+
+            var ids0 = s0.indexOf('id=');
+            var arrayIds0;
+            if (ids0 !== -1){
+                var substrS0 = s0.substring(ids0+3);
+                ids0 = substrS0.indexOf('&');
+                substrS0 = substrS0.substring(0, ids0);
+                arrayIds0 = substrS0.split(',');
+            }
+
+            var equalArrays = false;
+            if (arrayIds0 && arrayIds1 && arrayIds1.length === arrayIds0.length){
+                equalArrays = true;
+                arrayIds1.forEach((x1,i) => {
+                    equalArrays = equalArrays && arrayIds0.includes(x1);
+                    console.log(arrayIds0.includes(x1));
+                })
+            }
+            if(!equalArrays && (arrayIds0 || arrayIds1)){
+                console.log('push state');
+                history.pushState(null, document.title, window.location.href);
+            }
             s0 = s1;
             window.location.replace(s0);  // don't recenter the map!
         }
